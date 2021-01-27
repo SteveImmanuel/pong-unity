@@ -2,7 +2,6 @@
 
 public class SideWall : MonoBehaviour
 {
-    public PlayerController player;
     private GameManager gameManager;
 
     private void Start()
@@ -12,14 +11,9 @@ public class SideWall : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.name == "Ball")
+        if(collision.tag == "Ball")
         {
-            player.IncrementScore();
-
-            if (player.Score < gameManager.maxScore)
-            {
-                collision.gameObject.SendMessage("RestartGame", SendMessageOptions.RequireReceiver);
-            }
+            gameManager.IncrementScore(gameObject.tag);
         }
     }
 }

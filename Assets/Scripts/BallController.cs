@@ -2,8 +2,7 @@
 
 public class BallController : MonoBehaviour
 {
-    public float xInitialForce = 15f;
-    public float yInitialForce = 15;
+    public float initialForce = 25f;
 
     private Rigidbody2D rb;
     private Vector2 trajectoryOrigin;
@@ -25,31 +24,23 @@ public class BallController : MonoBehaviour
         trajectoryOrigin = transform.position;
     }
 
-    private void ResetBall()
+
+    private void PushBall()
+    {
+        float yRandomForce = Random.Range(-1f, 1f);
+        float xRandomForce = Random.Range(-1f, 1f);
+        Vector2 force = new Vector2(xRandomForce, yRandomForce);
+
+        rb.AddForce(force.normalized * initialForce);
+    }
+
+    public void ResetBall()
     {
         transform.position = Vector3.zero;
         rb.velocity = Vector2.zero;
     }
 
-    private void PushBall()
-    {
-        float yRandomForce = Random.Range(-yInitialForce, yInitialForce);
-        float randomDirection = Random.Range(-1f, 1f);
-        Vector2 force;
-
-        if (randomDirection >= 0)
-        {
-            force = new Vector2(xInitialForce, yRandomForce);
-        }
-        else
-        {
-            force = new Vector2(-xInitialForce, yRandomForce);
-        }
-
-        rb.AddForce(force);
-    }
-
-    private void RestartGame()
+    public void RestartGame()
     {
         ResetBall();
         Invoke(nameof(PushBall), 2);

@@ -8,7 +8,6 @@ public class PlayerController : MonoBehaviour
     public KeyCode downButton = KeyCode.DownArrow;
 
     private Rigidbody2D rb;
-    private int score;
     private float currentVelocity;
     private ContactPoint2D lastContactPoint;
 
@@ -16,7 +15,6 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         currentVelocity = 0f;
-        score = 0;
     }
 
     void Update()
@@ -43,21 +41,6 @@ public class PlayerController : MonoBehaviour
     {
         Vector2 velocity = new Vector2(0, currentVelocity);
         rb.velocity = velocity;
-    }
-
-    public void IncrementScore()
-    {
-        score++;
-    }
-
-    public void ResetScore()
-    {
-        score = 0;
-    }
-
-    public int Score
-    {
-        get { return score; }
     }
 
     public ContactPoint2D LastContactPoint

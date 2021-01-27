@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
     private Rigidbody2D ballRb;
     private CircleCollider2D ballCollider;
     private bool isDebugWindowShown = false;
+    private int player1Score;
+    private int player2Score;
 
     public static GameManager instance;
 
@@ -37,6 +39,37 @@ public class GameManager : MonoBehaviour
         ballCollider = ball.GetComponent<CircleCollider2D>();
     }
 
+    private void InitializeGame()
+    {
+        player1Score = player2Score = 0;
+        ball.RestartGame();
+
+    }
+
+    public void IncrementScore(string tag)
+    {
+        if (tag == "Player1")
+        {
+            player1Score++;
+        }
+        else if (tag == "Player2")
+        {
+            player2Score++;
+        }
+        else
+        {
+            Debug.LogError("Unknown Player Tag:" + tag);
+        }
+
+        if (player1Score == maxScore || player2Score == maxScore)
+        {
+            ball.ResetBall();
+        }
+        else
+        {
+            ball.RestartGame();
+        }
+    }
     void Update()
     {
 
@@ -44,38 +77,22 @@ public class GameManager : MonoBehaviour
 
     private void OnGUI()
     {
-        Debug.Log("OnGUI");
-        GUI.Label(new Rect(Screen.width / 2 - 150 - 12, 20, 100, 100), "" + player1.Score);
-        GUI.Label(new Rect(Screen.width / 2 + 150 + 12, 20, 100, 100), "" + player2.Score);
+        GUI.Label(new Rect(Screen.width / 2 - 150 - 12, 20, 100, 100), "" + player1Score);
+        GUI.Label(new Rect(Screen.width / 2 + 150 + 12, 20, 100, 100), "" + player2Score);
 
         // Tombol restart untuk memulai game dari awal
         if (GUI.Button(new Rect(Screen.width / 2 - 60, 35, 120, 53), "RESTART"))
         {
-            // Ketika tombol restart ditekan, reset skor kedua pemain...
-            player1.ResetScore();
-            player2.ResetScore();
-
-            // ...dan restart game.
-            ball.SendMessage("RestartGame", 0.5f, SendMessageOptions.RequireReceiver);
+            InitializeGame();
         }
 
-        // Jika pemain 1 menang (mencapai skor maksimal), ...
-        if (player1.Score == maxScore)
+        if (player1Score == maxScore)
         {
-            // ...tampilkan teks "PLAYER ONE WINS" di bagian kiri layar...
             GUI.Label(new Rect(Screen.width / 2 - 150, Screen.height / 2 - 10, 2000, 1000), "PLAYER ONE WINS");
-
-            // ...dan kembalikan bola ke tengah.
-            ball.SendMessage("ResetBall", null, SendMessageOptions.RequireReceiver);
         }
-        // Sebaliknya, jika pemain 2 menang (mencapai skor maksimal), ...
-        else if (player2.Score == maxScore)
+        else if (player2Score == maxScore)
         {
-            // ...tampilkan teks "PLAYER TWO WINS" di bagian kanan layar... 
             GUI.Label(new Rect(Screen.width / 2 + 30, Screen.height / 2 - 10, 2000, 1000), "PLAYER TWO WINS");
-
-            // ...dan kembalikan bola ke tengah.
-            ball.SendMessage("ResetBall", null, SendMessageOptions.RequireReceiver);
         }
 
         if (isDebugWindowShown)

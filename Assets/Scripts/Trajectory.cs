@@ -4,12 +4,12 @@ public class Trajectory : MonoBehaviour
 {
 
     public BallController ball;
-    public CircleCollider2D ballCollider;
-    public Rigidbody2D ballRb;
     public GameObject ballAtCollision;
 
     private bool drawBallAtCollision = false;
     private Vector2 offsetHitPoint = new Vector2();
+    private CircleCollider2D ballCollider;
+    private Rigidbody2D ballRb;
 
     void Start()
     {
@@ -20,8 +20,11 @@ public class Trajectory : MonoBehaviour
     void Update()
     {
         RaycastHit2D[] circleCastHitArray = Physics2D.CircleCastAll(ballRb.position, ballCollider.radius, ballRb.velocity.normalized);
+        Debug.Log(circleCastHitArray.Length);
         foreach (RaycastHit2D circleCastHit in circleCastHitArray)
         {
+
+            Debug.Log(circleCastHit.collider.name);
             // Jika terjadi tumbukan, dan tumbukan tersebut tidak dengan bola 
             // (karena garis lintasan digambar dari titik tengah bola)...
             if (circleCastHit.collider != null && circleCastHit.collider.GetComponent<BallController>() == null)
