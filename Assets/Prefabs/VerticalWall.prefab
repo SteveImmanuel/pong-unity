@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 5593592996282917355}
   - component: {fileID: 8849577503786131766}
   - component: {fileID: 820454813504995056}
-  m_Layer: 0
-  m_Name: Left
+  m_Layer: 9
+  m_Name: VerticalWall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -70,4 +70,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0abbd5a502daf842a0f07e3ccb963ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
