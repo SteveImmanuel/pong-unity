@@ -814,6 +814,11 @@ PrefabInstance:
       propertyPath: transformButton
       value: 305
       objectReference: {fileID: 0}
+    - target: {fileID: 8685842111327313514, guid: 04b0cfa74749e7f418587ce47f22f031,
+        type: 3}
+      propertyPath: initialPosition.x
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 8685842111327313515, guid: 04b0cfa74749e7f418587ce47f22f031,
         type: 3}
       propertyPath: m_Name
@@ -1021,10 +1026,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initialForce: 3000
-  minTimeBeforeFireball: 5
-  maxTimeBeforeFireball: 10
-  speedMultiplier: 2
-  acceleration: 3
+  minTimeBeforeFireball: 10
+  maxTimeBeforeFireball: 30
+  speedMultiplier: 3
+  acceleration: 5
 --- !u!1001 &1422441421
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1327,6 +1332,11 @@ PrefabInstance:
         type: 3}
       propertyPath: powerUpDuration
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8685842111327313514, guid: 04b0cfa74749e7f418587ce47f22f031,
+        type: 3}
+      propertyPath: initialPosition.x
+      value: -15
       objectReference: {fileID: 0}
     - target: {fileID: 8685842111327313514, guid: 04b0cfa74749e7f418587ce47f22f031,
         type: 3}

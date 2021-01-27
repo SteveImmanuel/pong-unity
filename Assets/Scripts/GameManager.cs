@@ -82,10 +82,6 @@ public class GameManager : MonoBehaviour
             RestartGame();
         }
     }
-    void Update()
-    {
-
-    }
 
     private void OnGUI()
     {
