@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     public float transformDuration = 0.5f;
     public float powerUpDuration = 1;
     public float powerUpCoolDown = 5;
+    public Vector3 initialPosition;
 
     private Rigidbody2D rb;
     private float currentVelocity;
@@ -94,9 +95,25 @@ public class PlayerController : MonoBehaviour
         get { return lastContactPoint; }
     }
 
+    public void ResetPlayer()
+    {
+        transform.position = initialPosition;
+        rb.bodyType = RigidbodyType2D.Kinematic;
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = 0;
+        transform.rotation = Quaternion.identity;
+    }
+
+    public void ChangeRbType()
+    {
+        rb.bodyType = RigidbodyType2D.Dynamic;
+        rb.gravityScale = 0;
+        rb.mass = 1;
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.name == "Ball")
+        if (collision.gameObject.tag == "Ball")
         {
             lastContactPoint = collision.GetContact(0);
         }

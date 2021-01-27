@@ -8,7 +8,6 @@ public class Trajectory : MonoBehaviour
     public LineRenderer line;
     public LayerMask layerMask;
 
-    private bool drawBallAtCollision = false;
     private Vector2 offsetHitPoint = new Vector2();
     private CircleCollider2D ballCollider;
     private Rigidbody2D ballRb;
@@ -23,7 +22,7 @@ public class Trajectory : MonoBehaviour
     {
         RaycastHit2D circleCastHit = Physics2D.CircleCast(ballRb.position, ballCollider.radius, ballRb.velocity.normalized, Mathf.Infinity, layerMask);
 
-        if (circleCastHit.collider != null && circleCastHit.collider.GetComponent<BallController>() == null)
+        if (circleCastHit.collider != null)
         {
             Vector2 hitPoint = circleCastHit.point;
             Vector2 hitNormal = circleCastHit.normal;
@@ -33,10 +32,9 @@ public class Trajectory : MonoBehaviour
             line.SetPosition(0, ball.transform.position);
             line.SetPosition(1, offsetHitPoint);
 
-            if (circleCastHit.collider.GetComponent<SideWall>() == null)
+            if (circleCastHit.collider.tag != "VerticalWall")
             {
                 Vector2 inVector = (offsetHitPoint - ball.TrajectoryOrigin).normalized;
-
                 Vector2 outVector = Vector2.Reflect(inVector, hitNormal);
 
                 float outDot = Vector2.Dot(outVector, hitNormal);
@@ -44,20 +42,11 @@ public class Trajectory : MonoBehaviour
                 {
                     line.positionCount = 3;
                     line.SetPosition(2, offsetHitPoint + outVector * 10.0f);
-                    drawBallAtCollision = true;
                 }
             }
         }
 
-
-        if (drawBallAtCollision)
-        {
-            ballAtCollision.transform.position = offsetHitPoint;
-            ballAtCollision.SetActive(true);
-        }
-        else
-        {
-            ballAtCollision.SetActive(false);
-        }
+        ballAtCollision.transform.position = offsetHitPoint;
+        ballAtCollision.SetActive(true);
     }
 }

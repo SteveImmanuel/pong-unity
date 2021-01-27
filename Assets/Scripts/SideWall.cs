@@ -2,6 +2,8 @@
 
 public class SideWall : MonoBehaviour
 {
+    public GameObject playerScorer;
+
     private GameManager gameManager;
 
     private void Start()
@@ -13,7 +15,7 @@ public class SideWall : MonoBehaviour
     {
         if(collision.tag == "Ball")
         {
-            gameManager.IncrementScore(gameObject.tag);
+            gameManager.IncrementScore(playerScorer.tag);
         }
     }
 }

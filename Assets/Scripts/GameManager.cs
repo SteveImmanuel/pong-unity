@@ -5,7 +5,7 @@ public class GameManager : MonoBehaviour
     public PlayerController player1;
     public PlayerController player2;
     public BallController ball;
-    public Trajectory trajectory;
+    public GameObject trajectory;
     public int maxScore;
 
     private Rigidbody2D player1Rb;
@@ -42,8 +42,20 @@ public class GameManager : MonoBehaviour
     private void InitializeGame()
     {
         player1Score = player2Score = 0;
-        ball.RestartGame();
+        RestartGame();
+    }
 
+    private void RestartGame()
+    {
+        ball.RestartGame();
+        player1.ResetPlayer();
+        player2.ResetPlayer();
+    }
+
+    public void FireBallMode()
+    {
+        player1.ChangeRbType();
+        player2.ChangeRbType();
     }
 
     public void IncrementScore(string tag)
@@ -67,7 +79,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            ball.RestartGame();
+            RestartGame();
         }
     }
     void Update()
@@ -131,7 +143,7 @@ public class GameManager : MonoBehaviour
         if (GUI.Button(new Rect(Screen.width / 2 - 60, Screen.height - 73, 120, 53), "TOGGLE\nDEBUG INFO"))
         {
             isDebugWindowShown = !isDebugWindowShown;
-            trajectory.enabled = !trajectory.enabled;
+            trajectory.SetActive(!trajectory.activeSelf);
         }
     }
 }
