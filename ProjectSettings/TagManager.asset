@@ -8,6 +8,7 @@ TagManager:
   - Player2
   - Ball
   - VerticalWall
+  - HorizontalWall
   layers:
   - Default
   - TransparentFX
@@ -19,7 +20,7 @@ TagManager:
   - 
   - Ball
   - Castable
-  - 
+  - PlayerBaseline
   - 
   - 
   - 

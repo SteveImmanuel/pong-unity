@@ -7,9 +7,8 @@ public class GameManager : MonoBehaviour
     public BallController ball;
     public GameObject trajectory;
     public int maxScore;
+    public UIController uIController;
 
-    private Rigidbody2D player1Rb;
-    private Rigidbody2D player2Rb;
     private Rigidbody2D ballRb;
     private CircleCollider2D ballCollider;
     private bool isDebugWindowShown = false;
@@ -33,14 +32,14 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        player1Rb = player1.GetComponent<Rigidbody2D>();
-        player2Rb = player2.GetComponent<Rigidbody2D>();
         ballRb = ball.GetComponent<Rigidbody2D>();
         ballCollider = ball.GetComponent<CircleCollider2D>();
+        InitializeGame();
     }
 
     private void InitializeGame()
     {
+        uIController.ShowControlInfo();
         player1Score = player2Score = 0;
         RestartGame();
     }
