@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class BallController : MonoBehaviour
 {
+    public float waitTime = 2f;
     public float initialForce = 25f;
     public float minTimeBeforeFireball = 5f;
     public float maxTimeBeforeFireball = 10f;
@@ -24,7 +25,6 @@ public class BallController : MonoBehaviour
         trail = GetComponentInChildren<TrailRenderer>();
         trail.enabled = false;
         timeBetweenFireball = Random.Range(minTimeBeforeFireball, maxTimeBeforeFireball);
-        RestartGame();
     }
 
     void Update()
@@ -40,6 +40,7 @@ public class BallController : MonoBehaviour
 
     IEnumerator IncreaseSpeed(float speedMultiplier)
     {
+        GameManager.instance.FireBallMode();
         float target = rb.velocity.magnitude * speedMultiplier;
         while (rb.velocity.magnitude < target)
         {
@@ -48,7 +49,6 @@ public class BallController : MonoBehaviour
             rb.velocity += deltaVelocity;
             yield return null;
         }
-        GameManager.instance.FireBallMode();
     }
 
     private void OnCollisionExit2D(Collision2D collision)
@@ -59,7 +59,7 @@ public class BallController : MonoBehaviour
 
     private void PushBall()
     {
-        float yRandomForce = Random.Range(-1f, 1f);
+        float yRandomForce = Random.Range(-0.7f, 0.7f);
         float xRandomForce = Random.Range(-1f, 1f);
         Vector2 force = new Vector2(xRandomForce, yRandomForce);
 
@@ -68,6 +68,7 @@ public class BallController : MonoBehaviour
 
     public void ResetBall()
     {
+        StopAllCoroutines();
         trail.Clear();
         trail.enabled = false;
         transform.position = Vector3.zero;
@@ -79,7 +80,7 @@ public class BallController : MonoBehaviour
         isFireball = false;
         elapsedTime = 0;
         ResetBall();
-        Invoke(nameof(PushBall), 2);
+        Invoke(nameof(PushBall), waitTime);
     }
 
     public Vector2 TrajectoryOrigin
