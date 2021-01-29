@@ -7,53 +7,110 @@ public class PlayerController : MonoBehaviour
     public KeyCode upButton = KeyCode.UpArrow;
     public KeyCode downButton = KeyCode.DownArrow;
     public KeyCode transformButton = KeyCode.E;
+    public KeyCode activateAIButton = KeyCode.RightShift;
     public float speed = 20f;
     public float yBoundary = 9f;
     public float maxLengthScale = 1.5f;
     public float transformDuration = 0.5f;
     public float powerUpDuration = 1;
-    public float powerUpCoolDown = 5;
-    public Vector3 initialPosition;
+    public float cooldownDuration = 5;
+    public bool activateAI = false;
+    public BallController ball;
+    public UIController uIController;
+    public LayerMask layerMask;
 
     private Rigidbody2D rb;
+    private Rigidbody2D ballRb;
+    private CircleCollider2D ballCollider;
     private float currentVelocity;
     private ContactPoint2D lastContactPoint;
     private bool powerAvailable = true;
     private bool isPowerActivated = false;
     private float elapsedTime = 0f;
+    private BoxCollider2D objCollider;
+    private Vector2 prediction = Vector2.zero;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        ballRb = ball.GetComponent<Rigidbody2D>();
+        ballCollider = ball.GetComponent<CircleCollider2D>();
+        objCollider = GetComponent<BoxCollider2D>();
         currentVelocity = 0f;
     }
+
+    void MoveUp()
+    {
+        currentVelocity = speed;
+    }
+
+    void MoveDown()
+    {
+        currentVelocity = -speed;
+    }
+
+    void PredictTrajectory()
+    {
+        RaycastHit2D predictionCastHit = Physics2D.CircleCast(ballRb.position, ballCollider.radius, ballRb.velocity.normalized, Mathf.Infinity, layerMask);
+        if (predictionCastHit.collider == null)
+        {
+            prediction = ball.transform.position;
+        }
+        else if (predictionCastHit.collider.tag == gameObject.tag)
+        {
+            prediction = predictionCastHit.point;
+        }
+    }
+
 
     void Update()
     {
         elapsedTime += Time.deltaTime;
-
-        if (Input.GetKey(upButton))
+        if (Input.GetKeyDown(activateAIButton))
         {
-            currentVelocity = speed;
+            activateAI = !activateAI;
+            uIController.SetAIStatus(gameObject.tag, activateAI);
         }
-        else if (Input.GetKey(downButton))
+
+        if (activateAI)
         {
-            currentVelocity = -speed;
+            PredictTrajectory();
+            float targetPosition = prediction.y;
+            float random = Random.Range(0, Mathf.Abs(targetPosition - transform.position.y));
+
+            if (targetPosition - transform.position.y >= (objCollider.size.y / 2) - random)
+            {
+                MoveUp();
+            } else if (transform.position.y - targetPosition >= (objCollider.size.y / 2) - random)
+            {
+                MoveDown();
+            }
+            else
+            {
+                currentVelocity = 0f;
+            }
         }
         else
         {
-            currentVelocity = 0f;
-        }
-        Vector3 position = transform.position;
-        position.y = Mathf.Clamp(position.y, -yBoundary, yBoundary);
-        transform.position = position;
+            if (Input.GetKey(upButton))
+            {
+                MoveUp();
+            }
+            else if (Input.GetKey(downButton))
+            {
+                MoveDown();
+            }
+            else
+            {
+                currentVelocity = 0f;
+            }
 
-
-        if (Input.GetKeyDown(transformButton) && powerAvailable && !isPowerActivated)
-        {
-            isPowerActivated = true;
-            StartCoroutine(Transform(1, maxLengthScale, transformDuration));
-            elapsedTime = 0;
+            if (Input.GetKeyDown(transformButton) && powerAvailable && !isPowerActivated)
+            {
+                isPowerActivated = true;
+                StartCoroutine(Transform(1, maxLengthScale, transformDuration));
+                elapsedTime = 0;
+            }
         }
 
         if (elapsedTime >= powerUpDuration && isPowerActivated)
@@ -64,9 +121,28 @@ public class PlayerController : MonoBehaviour
             elapsedTime = 0;
         }
 
-        if (elapsedTime >= powerUpCoolDown && !isPowerActivated)
+        if (elapsedTime >= cooldownDuration && !isPowerActivated)
         {
             powerAvailable = true;
+        }
+
+        Vector3 position = transform.position;
+        position.y = Mathf.Clamp(position.y, -yBoundary, yBoundary);
+        transform.position = position;
+
+        if (powerAvailable)
+        {
+            if (isPowerActivated)
+            {
+                uIController.SetPowerStatus(gameObject.tag, "ACTIVE (" + string.Format("{0:F1}", powerUpDuration - elapsedTime) + ")");
+            }
+            else
+            {
+                uIController.SetPowerStatus(gameObject.tag, "READY");
+            }
+        } else
+        {
+            uIController.SetPowerStatus(gameObject.tag, "COOLDOWN (" + string.Format("{0:F1}", cooldownDuration - elapsedTime) + ")");
         }
     }
 
@@ -97,7 +173,7 @@ public class PlayerController : MonoBehaviour
 
     public void ResetPlayer()
     {
-        transform.position = initialPosition;
+        transform.localPosition = Vector3.zero;
         rb.bodyType = RigidbodyType2D.Kinematic;
         rb.velocity = Vector3.zero;
         rb.angularVelocity = 0;
@@ -108,7 +184,7 @@ public class PlayerController : MonoBehaviour
     {
         rb.bodyType = RigidbodyType2D.Dynamic;
         rb.gravityScale = 0;
-        rb.mass = 1;
+        rb.mass = 0.1f;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

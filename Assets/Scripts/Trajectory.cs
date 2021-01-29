@@ -2,7 +2,6 @@
 
 public class Trajectory : MonoBehaviour
 {
-
     public BallController ball;
     public GameObject ballAtCollision;
     public LineRenderer line;
@@ -21,7 +20,6 @@ public class Trajectory : MonoBehaviour
     void Update()
     {
         RaycastHit2D circleCastHit = Physics2D.CircleCast(ballRb.position, ballCollider.radius, ballRb.velocity.normalized, Mathf.Infinity, layerMask);
-
         if (circleCastHit.collider != null)
         {
             Vector2 hitPoint = circleCastHit.point;
